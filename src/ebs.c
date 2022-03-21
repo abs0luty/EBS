@@ -21,6 +21,7 @@
 /// SOFTWARE.
 
 #include "lexer.h"
+#include "token.h"
 
 int main()
 {

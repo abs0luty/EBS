@@ -21,6 +21,7 @@
 /// SOFTWARE.
 
 #include "lexer.h"
+#include "token.h"
 #include "file.h"
 #include "println.h"
 #include <time.h>
