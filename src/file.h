@@ -4,6 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-char* read_file(const char* filename);
+char *read_file(const char *filename);
 
 #endif /* _file_h_ */
