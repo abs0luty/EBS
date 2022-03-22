@@ -137,10 +137,11 @@ static struct token *next_string_token(struct lexer_state *state) {
 
   advance(state);
 
+  struct code_location *endl = copy_code_location(state->location);
+
   string_buffer[index] = '\0';
 
-  return new_token(STRING_TOK, TVALUE(str, string_buffer), startl,
-                   copy_code_location(state->location));
+  return new_token(STRING_TOK, TVALUE(str, string_buffer), startl, endl);
 }
 
 static int alpha1(char chr) { return isalpha(chr); }

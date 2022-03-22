@@ -32,12 +32,6 @@
 int main(void) {
   print_build_info();
 
-  char *compiler = find_compiler();
-  if (!compiler) {
-    println("compiler not found");
-    exit(1);
-  }
-
   char *build_script_content = read_file("EBSFile");
 
   if (!build_script_content) {
@@ -52,6 +46,12 @@ int main(void) {
 
   struct visitor_state *visitor_state = new_visitor_state("EBSFile");
   visit_build_file(ast, visitor_state);
+
+  char *compiler = find_compiler();
+  if (!compiler) {
+    println("compiler not found");
+    exit(1);
+  }
 
   println("compiler detected: %s", compiler);
 }

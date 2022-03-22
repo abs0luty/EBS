@@ -58,10 +58,11 @@ struct component_AST *new_component_AST(int kind, char *name, char **sources,
   struct component_AST *component_AST = malloc(sizeof(struct component_AST));
   component_AST->kind = kind;
   component_AST->name = name;
-  memcpy(component_AST->sources, sources, sizeof(char *) * sources_count);
-  memcpy(component_AST->sources_startls, sources_startls,
-         sizeof(struct code_location *) * sources_count);
+  component_AST->sources = sources;
+  component_AST->sources_startls = sources_startls;
+  component_AST->sources_endls = sources_endls;
   component_AST->sources_count = sources_count;
+  return component_AST;
 }
 
 struct link_AST *new_link_AST(struct code_location *main_component_startl,

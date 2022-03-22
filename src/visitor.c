@@ -54,7 +54,7 @@ struct component *new_component(char *name, int kind, char **sources,
   struct component *component = malloc(sizeof(struct component));
   component->name = name;
   component->kind = kind;
-  memcpy(component->sources, sources, sources_count * sizeof(char *));
+  component->sources = sources;
   component->sources_count = sources_count;
   component->link_components =
       malloc(sizeof(struct component *) * LINK_COMPONENTS_BUFFER_SIZE);
@@ -149,7 +149,7 @@ static void visit_component_statement(struct component_AST *ast,
   for (register size_t i = 0; i < ast->sources_count; i++) {
     if (!file_exists(ast->sources[i])) {
       print_error(state, ast->sources_startls[i], ast->sources_endls[i],
-                  "source file does not exist");
+                  format("source file \"%s\" does not exist", ast->sources[i]));
       exit(1);
     }
   }

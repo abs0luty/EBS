@@ -31,7 +31,7 @@ static void print_error(struct parser_state *state, const char *message);
 static struct component_AST *
 parse_component_statement(struct parser_state *state);
 
-static char **parse_sources(struct parser_state *state, size_t *count,
+static char **parse_sources(struct parser_state *state, size_t *sources_count,
                             struct code_location **startls,
                             struct code_location **endls);
 
@@ -150,7 +150,9 @@ parse_component_statement(struct parser_state *state) {
 
   size_t sources_amount = 0;
 
-  struct code_location **startls, **endls;
+  struct code_location **startls =
+      malloc(sizeof(struct code_location *) * 10000);
+  struct code_location **endls = malloc(sizeof(struct code_location *) * 10000);
 
   char **sources = parse_sources(state, &sources_amount, startls, endls);
 
@@ -158,32 +160,31 @@ parse_component_statement(struct parser_state *state) {
                            endls, sources_amount);
 }
 
-static char **parse_sources(struct parser_state *state, size_t *count,
+static char **parse_sources(struct parser_state *state, size_t *sources_count,
                             struct code_location **startls,
                             struct code_location **endls) {
-  *count = 0;
+  register size_t count = 0;
 
   register size_t SOURCES_BUFFER_SIZE = 1000;
 
   char **sources = malloc(sizeof(char *) * SOURCES_BUFFER_SIZE);
 
-  startls = malloc(sizeof(struct code_location *) * SOURCES_BUFFER_SIZE);
-  endls = malloc(sizeof(struct code_location *) * SOURCES_BUFFER_SIZE);
-
   while (state->current_token->type != SEMICOLON_TOK) {
-    if (*count == SOURCES_BUFFER_SIZE) {
+    if (count == SOURCES_BUFFER_SIZE) {
       sources = realloc(sources, sizeof(char *) * (SOURCES_BUFFER_SIZE *= 2));
     }
 
     require_token(state, STRING_TOK);
 
-    startls[*count] = copy_code_location(state->current_token->startl);
-    sources[*count] = state->current_token->value.str;
-    endls[*count] = copy_code_location(state->current_token->endl);
-    *count++;
+    startls[count] = copy_code_location(state->current_token->startl);
+    sources[count] = state->current_token->value.str;
+    endls[count] = copy_code_location(state->current_token->endl);
+    count++;
 
     advance(state); // source name
   }
+
+  *sources_count = count;
 
   advance(state); // ';'
 
