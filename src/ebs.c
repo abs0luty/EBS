@@ -23,8 +23,11 @@
 #include <stdio.h>
 #include "println.h"
 #include "find_compiler.h"
+#include "build_info.h"
 
 int main(void) {
+	print_build_info();
+
 	char* compiler = find_compiler();
 	if (!compiler) {
 		println("compiler not found");

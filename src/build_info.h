@@ -19,3 +19,19 @@
 /// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 /// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 /// DEALINGS IN THE SOFTWARE.
+
+#include "println.h"
+#include "str.h"
+
+#define BUILD_AUTHOR "Salimgereyev Adi"
+
+#if defined(__clang__)
+#define BUILD_INFO_COMPILER format("Clang %d.%d",   \
+    __clang_major__, __clang_minor__)
+#elif defined(__GNUC__)
+#define BUILD_INFO_COMPILER format("GCC %d.%d", __GNUC__, __GNUC_MINOR__)
+#else
+#define BUILD_INFO_COMPILER "unknown"
+#endif
+
+void print_build_info(void);

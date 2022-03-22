@@ -43,9 +43,9 @@ static int program_exists(const char* name) {
     }
 
     const char *path = getenv("PATH");
-    
+
     if(!path) return 0;
-    
+
     char *buf = malloc(strlen(path) + strlen(name) + 3);
 
     if(!buf) return 0;
@@ -55,20 +55,20 @@ static int program_exists(const char* name) {
         for(; *path && *path!=':'; ++path,++p) {
             *p = *path;
         }
-    
+
     	if(p == buf) *p++='.';
         if(p[-1] != '/') *p++='/';
-    
+
     	strcpy(p, name);
-        
+
 	    if(access(buf, X_OK) == 0) {
             free(buf);
             return 1;
         }
-        
+
 	    if(!*path) break;
     }
-    
+
     free(buf);
     return 0;
 }

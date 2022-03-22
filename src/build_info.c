@@ -19,3 +19,13 @@
 /// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 /// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 /// DEALINGS IN THE SOFTWARE.
+
+#include "build_info.h"
+
+void print_build_info(void) {
+    println(">> build info:");
+    println("> compiler: %s", BUILD_INFO_COMPILER);
+    println("> build author: %s", BUILD_AUTHOR);
+    println("> building date: %s", __DATE__);
+    println("");
+}
