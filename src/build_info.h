@@ -26,8 +26,8 @@
 #define BUILD_AUTHOR "Salimgereyev Adi"
 
 #if defined(__clang__)
-#define BUILD_INFO_COMPILER format("Clang %d.%d",   \
-    __clang_major__, __clang_minor__)
+#define BUILD_INFO_COMPILER                                                    \
+  format("Clang %d.%d", __clang_major__, __clang_minor__)
 #elif defined(__GNUC__)
 #define BUILD_INFO_COMPILER format("GCC %d.%d", __GNUC__, __GNUC_MINOR__)
 #else

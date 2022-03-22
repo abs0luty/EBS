@@ -20,33 +20,38 @@
 /// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 /// DEALINGS IN THE SOFTWARE.
 
-#include <stdio.h>
-#include "println.h"
-#include "find_compiler.h"
 #include "build_info.h"
-#include "parser.h"
 #include "file.h"
+#include "find_compiler.h"
+#include "lexer.h"
+#include "parser.h"
+#include "println.h"
+#include "visitor.h"
+#include <stdio.h>
 
 int main(void) {
-	print_build_info();
+  print_build_info();
 
-	char* compiler = find_compiler();
-	if (!compiler) {
-		println("compiler not found");
-		exit(1);
-	}
+  char *compiler = find_compiler();
+  if (!compiler) {
+    println("compiler not found");
+    exit(1);
+  }
 
-	char* build_script_content = read_file("EBSFile");
+  char *build_script_content = read_file("EBSFile");
 
-	if (!build_script_content) {
-		println("unable to open EBSFile");
-		exit(1);
-	}
+  if (!build_script_content) {
+    println("unable to open EBSFile");
+    exit(1);
+  }
 
-	struct parser_state* parser_state = new_parser_state(
-		new_lexer_state("EBSFile", build_script_content));
-	struct build_file_AST* ast = parse_build_file(parser_state);
-	free_parser_state(parser_state);
-	
-	println("compiler detected: %s", compiler);
+  struct parser_state *parser_state =
+      new_parser_state(new_lexer_state("EBSFile", build_script_content));
+  struct build_file_AST *ast = parse_build_file(parser_state);
+  free_parser_state(parser_state);
+
+  struct visitor_state *visitor_state = new_visitor_state("EBSFile");
+  visit_build_file(ast, visitor_state);
+
+  println("compiler detected: %s", compiler);
 }

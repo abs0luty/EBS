@@ -22,56 +22,71 @@
 
 #include "AST.h"
 
-struct build_file_AST* new_build_file_AST(struct AST** asts,
-    size_t asts_count) {
-    struct build_file_AST* build_file_AST =
-        malloc(sizeof(struct build_file_AST));
-    build_file_AST->asts = asts;
-    build_file_AST->asts_count = asts_count;
-    return build_file_AST;
+struct build_file_AST *new_build_file_AST(struct AST **asts,
+                                          size_t asts_count) {
+  struct build_file_AST *build_file_AST = malloc(sizeof(struct build_file_AST));
+  build_file_AST->asts = asts;
+  build_file_AST->asts_count = asts_count;
+  return build_file_AST;
 }
 
-struct AST* AST_from_component_AST(struct component_AST* component_AST) {
-    struct AST* AST = malloc(sizeof(struct AST));
-    AST->t = COMPONENTAT;
-    AST->v.component_AST = component_AST;
-    return AST;
+struct AST *AST_from_component_AST(struct component_AST *component_AST) {
+  struct AST *AST = malloc(sizeof(struct AST));
+  AST->t = COMPONENTAT;
+  AST->v.component_AST = component_AST;
+  return AST;
 }
 
-struct AST* AST_from_link_AST(struct link_AST* link_AST) {
-    struct AST* AST = malloc(sizeof(struct AST));
-    AST->t = LINKAT;
-    AST->v.link_AST = link_AST;
-    return AST;
+struct AST *AST_from_link_AST(struct link_AST *link_AST) {
+  struct AST *AST = malloc(sizeof(struct AST));
+  AST->t = LINKAT;
+  AST->v.link_AST = link_AST;
+  return AST;
 }
 
-struct AST* AST_from_test_AST(struct test_AST* test_AST) {
-    struct AST* AST = malloc(sizeof(struct AST));
-    AST->t = TESTAT;
-    AST->v.test_AST = test_AST;
-    return AST;
+struct AST *AST_from_test_AST(struct test_AST *test_AST) {
+  struct AST *AST = malloc(sizeof(struct AST));
+  AST->t = TESTAT;
+  AST->v.test_AST = test_AST;
+  return AST;
 }
 
-struct component_AST* new_component_AST(
-    int kind, char* name, char** sources, size_t sources_count) {
-    struct component_AST* component_AST = malloc(sizeof(struct component_AST));
-    component_AST->kind = kind;
-    component_AST->name = name;
-    component_AST->sources = sources;
-    component_AST->sources_count = sources_count;
+struct component_AST *new_component_AST(int kind, char *name, char **sources,
+                                        struct code_location **sources_startls,
+                                        struct code_location **sources_endls,
+                                        size_t sources_count) {
+  struct component_AST *component_AST = malloc(sizeof(struct component_AST));
+  component_AST->kind = kind;
+  component_AST->name = name;
+  memcpy(component_AST->sources, sources, sizeof(char *) * sources_count);
+  memcpy(component_AST->sources_startls, sources_startls,
+         sizeof(struct code_location *) * sources_count);
+  component_AST->sources_count = sources_count;
 }
 
-struct link_AST* new_link_AST(
-    char* main_component, char** link_components,
-    size_t link_components_count) {
-    struct link_AST* link_AST = malloc(sizeof(struct link_AST));
-    link_AST->main_component = main_component;
-    link_AST->link_components = link_components;
-    link_AST->link_components_count = link_components_count;
+struct link_AST *new_link_AST(struct code_location *main_component_startl,
+                              struct code_location *main_component_endl,
+                              char *main_component, char **link_components,
+                              struct code_location **link_components_startls,
+                              struct code_location **link_components_endls,
+                              size_t link_components_count) {
+  struct link_AST *link_AST = malloc(sizeof(struct link_AST));
+  link_AST->main_component_startl = main_component_startl;
+  link_AST->main_component_endl = main_component_endl;
+  link_AST->main_component = main_component;
+  link_AST->link_components = link_components;
+  link_AST->link_components_startls = link_components_startls;
+  link_AST->link_components_endls = link_components_endls;
+  link_AST->link_components_count = link_components_count;
+  return link_AST;
 }
 
-struct test_AST* new_test_AST(char* component) {
-    struct test_AST* test_AST = malloc(sizeof(struct test_AST));
-    test_AST->component = component;
-    return test_AST;
+struct test_AST *new_test_AST(struct code_location *component_startl,
+                              struct code_location *component_endl,
+                              char *component) {
+  struct test_AST *test_AST = malloc(sizeof(struct test_AST));
+  test_AST->component_startl = component_startl;
+  test_AST->component_endl = component_endl;
+  test_AST->component = component;
+  return test_AST;
 }

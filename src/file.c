@@ -22,8 +22,7 @@
 
 #include "file.h"
 
-char *read_file(const char *filename)
-{
+char *read_file(const char *filename) {
   FILE *file = fopen(filename, "rb");
 
   if (!file)
