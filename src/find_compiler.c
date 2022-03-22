@@ -22,53 +22,57 @@
 
 #include "find_compiler.h"
 
-static const char* compiler_names[] = {
-	"cc", "gcc", "cl", "bcc", "xlc", "clang"
-};
+static const char *compiler_names[] = {"cc",  "gcc", "cl",
+                                       "bcc", "xlc", "clang"};
 
-static int program_exists(const char* name);
+static int program_exists(const char *name);
 
-char* find_compiler(void) {
-	register int i;
-	for (i = 0; i < sizeof(compiler_names) / sizeof(const char*); i++) {
-		if (program_exists(compiler_names[i]))
-			return (char*) compiler_names[i];
-	}
-	return NULL;
+char *find_compiler(void) {
+  register int i;
+  for (i = 0; i < sizeof(compiler_names) / sizeof(const char *); i++) {
+    if (program_exists(compiler_names[i]))
+      return (char *)compiler_names[i];
+  }
+  return NULL;
 }
 
-static int program_exists(const char* name) {
-   if(strchr(name, '/')) {
-        return access(name, X_OK) == 0;
-    }
+static int program_exists(const char *name) {
+  if (strchr(name, '/')) {
+    return access(name, X_OK) == 0;
+  }
 
-    const char *path = getenv("PATH");
+  const char *path = getenv("PATH");
 
-    if(!path) return 0;
-
-    char *buf = malloc(strlen(path) + strlen(name) + 3);
-
-    if(!buf) return 0;
-
-    for(; *path; ++path) {
-        char *p = buf;
-        for(; *path && *path!=':'; ++path,++p) {
-            *p = *path;
-        }
-
-    	if(p == buf) *p++='.';
-        if(p[-1] != '/') *p++='/';
-
-    	strcpy(p, name);
-
-	    if(access(buf, X_OK) == 0) {
-            free(buf);
-            return 1;
-        }
-
-	    if(!*path) break;
-    }
-
-    free(buf);
+  if (!path)
     return 0;
+
+  char *buf = malloc(strlen(path) + strlen(name) + 3);
+
+  if (!buf)
+    return 0;
+
+  for (; *path; ++path) {
+    char *p = buf;
+    for (; *path && *path != ':'; ++path, ++p) {
+      *p = *path;
+    }
+
+    if (p == buf)
+      *p++ = '.';
+    if (p[-1] != '/')
+      *p++ = '/';
+
+    strcpy(p, name);
+
+    if (access(buf, X_OK) == 0) {
+      free(buf);
+      return 1;
+    }
+
+    if (!*path)
+      break;
+  }
+
+  free(buf);
+  return 0;
 }

@@ -23,10 +23,11 @@
 #ifndef _find_compiler_h_
 #define _find_compiler_h_
 
-#include <unistd.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-char* find_compiler(void);
+
+char *find_compiler(void);
 
 #endif /* _find_compiler_h_ */

@@ -23,15 +23,14 @@
 #ifndef _lexer_h_
 #define _lexer_h_
 
-#include <stdlib.h>
-#include <ctype.h>
-#include "token.h"
 #include "code_location.h"
+#include "token.h"
+#include <ctype.h>
+#include <stdlib.h>
 
-struct lexer_state
-{
-    const char *filename, *input;
-    struct code_location *location;
+struct lexer_state {
+  const char *filename, *input;
+  struct code_location *location;
 };
 
 struct lexer_state *new_lexer_state(const char *filename, const char *input);
