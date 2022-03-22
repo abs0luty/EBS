@@ -19,3 +19,14 @@
 /// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 /// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 /// DEALINGS IN THE SOFTWARE.
+
+#ifndef _find_compiler_h_
+#define _find_compiler_h_
+
+#include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
+
+char* find_compiler(void);
+
+#endif /* _find_compiler_h_ */

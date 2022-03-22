@@ -20,14 +20,15 @@
 /// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 /// DEALINGS IN THE SOFTWARE.
 
-#include "lexer.h"
-#include "token.h"
+#include <stdio.h>
+#include "println.h"
+#include "find_compiler.h"
 
-int main()
-{
-    struct lexer_state *state = new_lexer_state(
-        "test.c", "int main() { return 0; }");
-    struct token *token = next_token(state);
-
-    printf("%d", token->type);
+int main(void) {
+	char* compiler = find_compiler();
+	if (!compiler) {
+		println("compiler not found");
+		exit(1);
+	}
+	println("compiler detected: %s", compiler);
 }
