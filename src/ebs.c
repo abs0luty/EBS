@@ -24,6 +24,8 @@
 #include "println.h"
 #include "find_compiler.h"
 #include "build_info.h"
+#include "parser.h"
+#include "file.h"
 
 int main(void) {
 	print_build_info();
@@ -33,5 +35,18 @@ int main(void) {
 		println("compiler not found");
 		exit(1);
 	}
+
+	char* build_script_content = read_file("EBSFile");
+
+	if (!build_script_content) {
+		println("unable to open EBSFile");
+		exit(1);
+	}
+
+	struct parser_state* parser_state = new_parser_state(
+		new_lexer_state("EBSFile", build_script_content));
+	struct build_file_AST* ast = parse_build_file(parser_state);
+	free_parser_state(parser_state);
+	
 	println("compiler detected: %s", compiler);
 }

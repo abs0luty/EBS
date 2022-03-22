@@ -42,13 +42,18 @@ char *dump_token(const struct token *token)
 }
 
 static char *dumped_token_types_table[] = {
-    [STRING_TOK] = "STRING_TOK",
-    [ID_TOK] = "ID_TOK",
-    [COMPONENT_TOK] = "COMPONENT_TOK",
-    [PUNCTUATOR_TOK] = "PUNCTUATOR_TOK",
-    [EOF_TOK] = "EOF_TOK",
-    [ERROR_TOK] = "ERROR_TOK",
-    [STRING_NOT_CLOSED_TOK] = "STRING_NOT_CLOSED_TOK",
+    [STRING_TOK] = "string",
+    [ID_TOK] = "identifier",
+    [COMPONENT_TOK] = "keyword 'component'",
+	[LINK_TOK] = "keyword 'link'",
+	[EXECUTABLE_TOK] = "keyword 'executable'",
+	[STATIC_TOK] = "keyword 'static'",
+	[TEST_TOK] = "keyword 'test'",
+	[SEMICOLON_TOK] = "semicolon",
+	[COLON_TOK] = "colon",
+    [EOF_TOK] = "end of file (EOF)",
+    [ERROR_TOK] = "error",
+    [STRING_NOT_CLOSED_TOK] = "string not closed error",
 };
 
 char *dump_token_type(int type)
@@ -64,8 +69,12 @@ char *dump_token_value(union token_value value, int type)
 	case ID_TOK:
 	case COMPONENT_TOK:
 	case STRING_NOT_CLOSED_TOK:
+	case STATIC_TOK:
+	case LINK_TOK:
+	case EXECUTABLE_TOK:
 		return value.str;
-	case PUNCTUATOR_TOK:
+	case COLON_TOK:
+	case SEMICOLON_TOK:
 	case ERROR_TOK:
 	{
 		char *str = malloc(2);

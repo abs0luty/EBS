@@ -19,3 +19,26 @@
 /// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 /// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 /// DEALINGS IN THE SOFTWARE.
+
+#ifndef _parser_h_
+#define _parser_h_
+
+#include "AST.h"
+#include "lexer.h"
+#include "token.h"
+#include "println.h"
+
+struct parser_state {
+    struct lexer_state *lexer_state;
+    struct token *current_token;
+};
+
+struct parser_state* new_parser_state(struct lexer_state *lexer_state);
+
+struct build_file_AST* parse_build_file(struct parser_state* state);
+
+struct AST* parse_statement(struct parser_state* state);
+
+void free_parser_state(struct parser_state *parser_state);
+
+#endif /* _parser_h_ */

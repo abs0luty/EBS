@@ -64,22 +64,25 @@ struct token *next_token(struct lexer_state *state)
     if (current_char(state) == '"')
         return next_string_token(state);
 
-    if (alpha1(current_char(state)))
-        return next_name_token(state);
-
-    switch (current_char(state))
+    if (current_char(state) == ';')
     {
-        case ';':
-            advance(state);
-            return new_token(SEMICOLON_TOK,
+            struct token* token = new_token(SEMICOLON_TOK,
                 TVALUE(chr, ';'), copy_code_location(state->location),
                 copy_advanced_code_location(state->location));
-        case ':':
             advance(state);
-            return new_token(COLON_TOK,
+            return token;
+    }
+    if (current_char(state) == ':')
+    {
+            struct token* token = new_token(COLON_TOK,
                 TVALUE(chr, ':'), copy_code_location(state->location),
                 copy_advanced_code_location(state->location));
+            advance(state);
+            return token;
     }
+
+    if (alpha1(current_char(state)))
+        return next_name_token(state);
 
     if (lexing_finished(state))
         return new_token(EOF_TOK, TVALUE(chr, (char)0), state->location,
@@ -184,12 +187,11 @@ static struct token *next_name_token(struct lexer_state *state)
 
     struct code_location *endl = copy_code_location(state->location);
 
-    advance(state);
-
     check_keyword(name_buffer, "component", COMPONENT_TOK);
     check_keyword(name_buffer, "executable", EXECUTABLE_TOK);
     check_keyword(name_buffer, "static", STATIC_TOK);
     check_keyword(name_buffer, "link", LINK_TOK);
+    check_keyword(name_buffer, "test", TEST_TOK);
 
     return new_token(ID_TOK, TVALUE(str, name_buffer),
                      startl, endl);
