@@ -51,13 +51,18 @@ struct AST *AST_from_test_AST(struct test_AST *test_AST) {
   return AST;
 }
 
-struct component_AST *new_component_AST(int kind, char *name, char **sources,
+struct component_AST *new_component_AST(int kind, char *name,
+                                        struct code_location *name_startl,
+                                        struct code_location *name_endl,
+                                        char **sources,
                                         struct code_location **sources_startls,
                                         struct code_location **sources_endls,
                                         size_t sources_count) {
   struct component_AST *component_AST = malloc(sizeof(struct component_AST));
   component_AST->kind = kind;
   component_AST->name = name;
+  component_AST->name_startl = name_startl;
+  component_AST->name_endl = name_endl;
   component_AST->sources = sources;
   component_AST->sources_startls = sources_startls;
   component_AST->sources_endls = sources_endls;

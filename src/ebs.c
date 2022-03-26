@@ -27,11 +27,11 @@
 #include "parser.h"
 #include "println.h"
 #include "visitor.h"
+#include "compile.h"
+#include <time.h>
 #include <stdio.h>
 
 int main(void) {
-  print_build_info();
-
   char *build_script_content = read_file("EBSFile");
 
   if (!build_script_content) {
@@ -39,19 +39,30 @@ int main(void) {
     exit(1);
   }
 
+  clock_t start = clock();
   struct parser_state *parser_state =
       new_parser_state(new_lexer_state("EBSFile", build_script_content));
   struct build_file_AST *ast = parse_build_file(parser_state);
   free_parser_state(parser_state);
-
+  
+  println("[SUCESS]: parsed EBSFile in %f seconds", (double)(clock() - start) / CLOCKS_PER_SEC);
+  
   struct visitor_state *visitor_state = new_visitor_state("EBSFile");
   visit_build_file(ast, visitor_state);
 
-  char *compiler = find_compiler();
-  if (!compiler) {
-    println("compiler not found");
-    exit(1);
-  }
+  println("[SUCESS]: visited EBSFile in %f seconds", (double)(clock() - start) / CLOCKS_PER_SEC);
 
-  println("compiler detected: %s", compiler);
+  print_build_info();
+
+  #ifdef useGCC
+  #define compiler "gcc"
+  #elif useCLANG
+  #define compiler "clang"
+  #elif useCC
+  #define compiler "cc"
+  #else
+  #error "no compiler specified: use -useGCC, -useCLANG or -useCC"
+  #endif
+
+  compile(visitor_state);
 }

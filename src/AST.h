@@ -59,13 +59,17 @@ struct component_AST {
   } kind;
 
   char *name;
+  struct code_location *name_startl, *name_endl;
 
   char **sources;
   struct code_location **sources_startls, **sources_endls;
   size_t sources_count;
 };
 
-struct component_AST *new_component_AST(int kind, char *name, char **sources,
+struct component_AST *new_component_AST(int kind, char *name,
+                                        struct code_location *name_startl,
+                                        struct code_location *name_endl,
+                                        char **sources,
                                         struct code_location **sources_startls,
                                         struct code_location **sources_endls,
                                         size_t sources_count);

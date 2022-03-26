@@ -62,6 +62,16 @@ struct component *new_component(char *name, int kind, char **sources,
   return component;
 }
 
+void free_component(struct component *component) {
+  free(component->name);
+  
+  for (register size_t i = 0; i < component->sources_count; i++)
+    free(component->sources[i]);
+
+  for (register size_t i = 0; i < component->link_components_count; i++)
+    free_component(component->link_components[i]);
+}
+
 struct visitor_state *new_visitor_state(const char *filename) {
   struct visitor_state *state = malloc(sizeof(struct visitor_state));
   state->filename = filename;
@@ -86,6 +96,14 @@ int file_exists(const char *filename) {
     return 1;
   }
   return 0;
+}
+
+void free_visitor_state(struct visitor_state *state) {
+  for (register size_t i = 0; i < state->components_count; i++)
+    free_component(state->components[i]);
+
+  for (register size_t i = 0; i < state->tests_count; i++)
+    free(state->tests[i]);
 }
 
 static void print_error(struct visitor_state *state,
@@ -146,6 +164,13 @@ static void visit_statement(struct AST *ast, struct visitor_state *state) {
 
 static void visit_component_statement(struct component_AST *ast,
                                       struct visitor_state *state) {
+  if (component_exists(ast->name, state))
+  {
+    print_error(state, ast->name_startl, ast->name_endl,
+        format("component \"%s\" redefined!", ast->name));
+    exit(1);
+  }
+
   for (register size_t i = 0; i < ast->sources_count; i++) {
     if (!file_exists(ast->sources[i])) {
       print_error(state, ast->sources_startls[i], ast->sources_endls[i],

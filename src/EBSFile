@@ -1,0 +1,11 @@
+component static util: "str.c" "println.c" "build_info.c" "file.c";
+
+component static token: "token.c" "code_location.c";
+component static AST: "AST.c";
+
+component static parser: "lexer.c" "parser.c";
+link parser AST token;
+
+
+component executable ebslex: "ebs_lex.c";
+link ebslex parser util;

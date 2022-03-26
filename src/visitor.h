@@ -44,6 +44,8 @@ struct component {
 struct component *new_component(char *name, int kind, char **sources,
                                 size_t sources_count);
 
+void free_component(struct component *component);
+
 #define COMPONENTS_BUFFER_SIZE 10000
 #define TESTS_BUFFER_SIZE 100000
 
@@ -60,5 +62,7 @@ struct visitor_state {
 struct visitor_state *new_visitor_state(const char *filename);
 
 void visit_build_file(struct build_file_AST *ast, struct visitor_state *state);
+
+void free_visitor_state(struct visitor_state *state);
 
 #endif /* _visitor_h_ */
