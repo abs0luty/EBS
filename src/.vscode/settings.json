@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "compile.h": "c",
+        "stdlib.h": "c"
+    }
+}
