@@ -57,7 +57,8 @@ void compile(const struct visitor_state *state) {
 static void compile_component(const struct component *component) {
   for (register size_t i = 0; i < component->sources_count; i++) {
     char *source = component->sources[i];
-    char *command = format("gcc -c %s -o singleObject_%s.o", source, source);
+    char *command =
+        format("%s -c %s -o singleObject_%s.o", compiler, source, source);
     int exit_code = system(command);
     if (exit_code != 0) {
       println("[ERROR]: failed to compile single object: \"%s\"", source);
@@ -99,8 +100,8 @@ static void compile_component(const struct component *component) {
 
   if (component->kind == EXECUTABLECK) {
     println("[INFO]: linking executable component: \"%s\"", component->name);
-    exit_code =
-        system(format("gcc %s.o -o %s", component->name, component->name));
+    exit_code = system(
+        format("%s %s.o -o %s", compiler, component->name, component->name));
     if (exit_code != 0) {
       println("[ERROR]: failed to link executable component \"%s\"",
               component->name);
