@@ -141,9 +141,11 @@ parse_component_statement(struct parser_state *state) {
 
   require_token(state, ID_TOK);
 
-  char* component_name = state->current_token->value.str;
-  struct code_location* component_name_startl = copy_code_location(state->current_token->startl);
-  struct code_location* component_name_endl = copy_code_location(state->current_token->endl);
+  char *component_name = state->current_token->value.str;
+  struct code_location *component_name_startl =
+      copy_code_location(state->current_token->startl);
+  struct code_location *component_name_endl =
+      copy_code_location(state->current_token->endl);
 
   advance(state); // component name
 
@@ -159,8 +161,8 @@ parse_component_statement(struct parser_state *state) {
   char **sources = parse_sources(state, &sources_amount, startls, endls);
 
   return new_component_AST(component_type, component_name,
-                           component_name_startl, component_name_endl,
-                           sources, startls, endls, sources_amount);
+                           component_name_startl, component_name_endl, sources,
+                           startls, endls, sources_amount);
 }
 
 static char **parse_sources(struct parser_state *state, size_t *sources_count,

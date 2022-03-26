@@ -58,6 +58,14 @@ struct token *next_token(struct lexer_state *state) {
   if (isspace(current_char(state)))
     skip_whitespace(state);
 
+  // skip comment
+  if (current_char(state) == '/' && lookahead(state) == '/') {
+    advance(state);
+    advance(state);
+    while (current_char(state) != '\n' && !lexing_finished(state))
+      advance(state);
+  }
+
   if (current_char(state) == '"')
     return next_string_token(state);
 

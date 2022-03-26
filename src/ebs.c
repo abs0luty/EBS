@@ -21,15 +21,15 @@
 /// DEALINGS IN THE SOFTWARE.
 
 #include "build_info.h"
+#include "compile.h"
 #include "file.h"
 #include "find_compiler.h"
 #include "lexer.h"
 #include "parser.h"
 #include "println.h"
 #include "visitor.h"
-#include "compile.h"
-#include <time.h>
 #include <stdio.h>
+#include <time.h>
 
 int main(void) {
   char *build_script_content = read_file("EBSFile");
@@ -44,25 +44,17 @@ int main(void) {
       new_parser_state(new_lexer_state("EBSFile", build_script_content));
   struct build_file_AST *ast = parse_build_file(parser_state);
   free_parser_state(parser_state);
-  
-  println("[SUCESS]: parsed EBSFile in %f seconds", (double)(clock() - start) / CLOCKS_PER_SEC);
-  
+
+  println("[SUCESS]: parsed EBSFile in %f seconds",
+          (double)(clock() - start) / CLOCKS_PER_SEC);
+
   struct visitor_state *visitor_state = new_visitor_state("EBSFile");
   visit_build_file(ast, visitor_state);
 
-  println("[SUCESS]: visited EBSFile in %f seconds", (double)(clock() - start) / CLOCKS_PER_SEC);
+  println("[SUCESS]: visited EBSFile in %f seconds",
+          (double)(clock() - start) / CLOCKS_PER_SEC);
 
   print_build_info();
-
-  #ifdef useGCC
-  #define compiler "gcc"
-  #elif useCLANG
-  #define compiler "clang"
-  #elif useCC
-  #define compiler "cc"
-  #else
-  #error "no compiler specified: use -useGCC, -useCLANG or -useCC"
-  #endif
 
   compile(visitor_state);
 }

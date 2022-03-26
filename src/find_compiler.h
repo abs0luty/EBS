@@ -27,7 +27,6 @@
 #include <string.h>
 #include <unistd.h>
 
-
 char *find_compiler(void);
 
 #endif /* _find_compiler_h_ */

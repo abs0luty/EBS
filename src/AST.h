@@ -66,13 +66,11 @@ struct component_AST {
   size_t sources_count;
 };
 
-struct component_AST *new_component_AST(int kind, char *name,
-                                        struct code_location *name_startl,
-                                        struct code_location *name_endl,
-                                        char **sources,
-                                        struct code_location **sources_startls,
-                                        struct code_location **sources_endls,
-                                        size_t sources_count);
+struct component_AST *
+new_component_AST(int kind, char *name, struct code_location *name_startl,
+                  struct code_location *name_endl, char **sources,
+                  struct code_location **sources_startls,
+                  struct code_location **sources_endls, size_t sources_count);
 
 struct link_AST {
   struct code_location *main_component_startl, *main_component_endl;
@@ -98,5 +96,14 @@ struct test_AST {
 struct test_AST *new_test_AST(struct code_location *component_startl,
                               struct code_location *component_endl,
                               char *component);
+
+struct add_compile_options_AST {
+  char *options;
+  struct code_location *options_startl, *options_endl;
+};
+
+struct add_compile_options_AST *
+new_add_compile_options_AST(char *options, struct code_location *options_startl,
+                            struct code_location *options_endl);
 
 #endif /* _AST_h_ */

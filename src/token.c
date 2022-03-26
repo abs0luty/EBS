@@ -23,71 +23,61 @@
 #include "token.h"
 
 struct token *new_token(int type, union token_value value,
-			const struct code_location *startl, const struct code_location *endl)
-{
-	struct token *token = malloc(sizeof(struct token));
-	token->type = type;
-	token->value = value;
-	token->startl = startl;
-	token->endl = endl;
-	return token;
+                        const struct code_location *startl,
+                        const struct code_location *endl) {
+  struct token *token = malloc(sizeof(struct token));
+  token->type = type;
+  token->value = value;
+  token->startl = startl;
+  token->endl = endl;
+  return token;
 }
 
-char *dump_token(const struct token *token)
-{
-	return format("tok(%s, [%s], %s, %s)", dump_token_type(token->type),
-		      dump_token_value(token->value, token->type),
-		      dump_code_location(token->startl),
-		      dump_code_location(token->endl));
+char *dump_token(const struct token *token) {
+  return format("tok(%s, [%s], %s, %s)", dump_token_type(token->type),
+                dump_token_value(token->value, token->type),
+                dump_code_location(token->startl),
+                dump_code_location(token->endl));
 }
 
 static char *dumped_token_types_table[] = {
     [STRING_TOK] = "string",
     [ID_TOK] = "identifier",
     [COMPONENT_TOK] = "keyword 'component'",
-	[LINK_TOK] = "keyword 'link'",
-	[EXECUTABLE_TOK] = "keyword 'executable'",
-	[STATIC_TOK] = "keyword 'static'",
-	[TEST_TOK] = "keyword 'test'",
-	[SEMICOLON_TOK] = "semicolon",
-	[COLON_TOK] = "colon",
+    [LINK_TOK] = "keyword 'link'",
+    [EXECUTABLE_TOK] = "keyword 'executable'",
+    [STATIC_TOK] = "keyword 'static'",
+    [TEST_TOK] = "keyword 'test'",
+    [SEMICOLON_TOK] = "semicolon",
+    [COLON_TOK] = "colon",
     [EOF_TOK] = "end of file (EOF)",
     [ERROR_TOK] = "error",
     [STRING_NOT_CLOSED_TOK] = "string not closed error",
 };
 
-char *dump_token_type(int type)
-{
-	return dumped_token_types_table[type];
+char *dump_token_type(int type) { return dumped_token_types_table[type]; }
+
+char *dump_token_value(union token_value value, int type) {
+  switch (type) {
+  case STRING_TOK:
+  case ID_TOK:
+  case COMPONENT_TOK:
+  case STRING_NOT_CLOSED_TOK:
+  case STATIC_TOK:
+  case LINK_TOK:
+  case EXECUTABLE_TOK:
+    return value.str;
+  case COLON_TOK:
+  case SEMICOLON_TOK:
+  case ERROR_TOK: {
+    char *str = malloc(2);
+    str[0] = value.chr;
+    str[1] = '\0';
+    return str;
+  }
+  default:
+    return "???";
+  }
 }
 
-char *dump_token_value(union token_value value, int type)
-{
-	switch (type)
-	{
-	case STRING_TOK:
-	case ID_TOK:
-	case COMPONENT_TOK:
-	case STRING_NOT_CLOSED_TOK:
-	case STATIC_TOK:
-	case LINK_TOK:
-	case EXECUTABLE_TOK:
-		return value.str;
-	case COLON_TOK:
-	case SEMICOLON_TOK:
-	case ERROR_TOK:
-	{
-		char *str = malloc(2);
-		str[0] = value.chr;
-		str[1] = '\0';
-		return str;
-	}
-	default:
-		return "???";
-	}
-}
-
-void free_token(struct token *token)
-{
-	free(token);
-}
+void free_token(struct token *token) { free(token); }

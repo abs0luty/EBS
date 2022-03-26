@@ -25,8 +25,8 @@
 
 #include <stdarg.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 char *format(const char *format, ...) __attribute__((format(printf, 1, 2)));
 

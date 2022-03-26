@@ -23,9 +23,9 @@
 #ifndef _compile_h_
 #define _compile_h_
 
-#include <string.h>
 #include "visitor.h"
+#include <string.h>
 
-void compile(const struct visitor_state* state);
+void compile(const struct visitor_state *state);
 
 #endif /* _compile_h_ */

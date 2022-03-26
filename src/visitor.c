@@ -64,7 +64,7 @@ struct component *new_component(char *name, int kind, char **sources,
 
 void free_component(struct component *component) {
   free(component->name);
-  
+
   for (register size_t i = 0; i < component->sources_count; i++)
     free(component->sources[i]);
 
@@ -164,10 +164,9 @@ static void visit_statement(struct AST *ast, struct visitor_state *state) {
 
 static void visit_component_statement(struct component_AST *ast,
                                       struct visitor_state *state) {
-  if (component_exists(ast->name, state))
-  {
+  if (component_exists(ast->name, state)) {
     print_error(state, ast->name_startl, ast->name_endl,
-        format("component \"%s\" redefined!", ast->name));
+                format("component \"%s\" redefined!", ast->name));
     exit(1);
   }
 
