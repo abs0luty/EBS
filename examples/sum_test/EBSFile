@@ -1,0 +1,8 @@
+component static sumLib: "sum.c";
+
+component executable sumMachine: "main.c";
+link sumMachine sumLib;
+
+component executable sumTest: "sum-test.c";
+link sumTest sumLib;
+test sumTest;
