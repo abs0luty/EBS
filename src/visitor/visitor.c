@@ -102,8 +102,13 @@ void free_visitor_state(struct visitor_state *state) {
   for (register size_t i = 0; i < state->components_count; i++)
     free_component(state->components[i]);
 
+  free(state->components);
+
   for (register size_t i = 0; i < state->tests_count; i++)
     free(state->tests[i]);
+
+  free(state->tests);
+  free(state);
 }
 
 static void print_error(struct visitor_state *state,

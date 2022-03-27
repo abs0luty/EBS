@@ -56,4 +56,6 @@ int main(void) {
   print_build_info();
 
   compile(visitor_state);
+
+  free_visitor_state(visitor_state);
 }
