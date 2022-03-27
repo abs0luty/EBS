@@ -1,5 +1,4 @@
-# Easy to use Build System (EBS).
-
+<p align="center"> <img src="icon.svg" width="200"></img></p>
 EBS is a really fast build system that helps you make your build scenarios more shorter and readable. Examples can be found at examples/ folder.
 
 Example of build scenario:
@@ -18,6 +17,7 @@ component static libOmega: "src/omega/omega.c"
 link libOmega libOmegaThread;
 
 component executable omegaRendererTest: "src/omega/tests/omega_renderer_test.c";
+link omegaRendererTest libOmega;
 test omegaRendererTest;
 ```
 
