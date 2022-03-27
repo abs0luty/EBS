@@ -20,12 +20,23 @@
 /// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 /// DEALINGS IN THE SOFTWARE.
 
-#ifndef _compile_h_
-#define _compile_h_
+#ifndef _lexer_h_
+#define _lexer_h_
 
-#include "visitor.h"
-#include <string.h>
+#include "../util/code_location.h"
+#include "token.h"
+#include <ctype.h>
+#include <stdlib.h>
 
-void compile(const struct visitor_state *state);
+struct lexer_state {
+  const char *filename, *input;
+  struct code_location *location;
+};
 
-#endif /* _compile_h_ */
+struct lexer_state *new_lexer_state(const char *filename, const char *input);
+
+struct token *next_token(struct lexer_state *state);
+
+void free_lexer_state(struct lexer_state *state);
+
+#endif /* _lexer_h_ */

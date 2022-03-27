@@ -20,23 +20,39 @@
 /// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 /// DEALINGS IN THE SOFTWARE.
 
-#ifndef _lexer_h_
-#define _lexer_h_
+#include "../lexer/lexer.h"
+#include "../lexer/token.h"
+#include "../util/file.h"
+#include "../util/println.h"
+#include <time.h>
 
-#include "code_location.h"
-#include "token.h"
-#include <ctype.h>
-#include <stdlib.h>
+int main(size_t argc, const char **argv) {
+  const char *filename = argv[1];
 
-struct lexer_state {
-  const char *filename, *input;
-  struct code_location *location;
-};
+  if (!filename) {
+    println("usage: %s <filename>", argv[0]);
+    return 1;
+  }
 
-struct lexer_state *new_lexer_state(const char *filename, const char *input);
+  char *input = read_file(filename);
 
-struct token *next_token(struct lexer_state *state);
+  if (!input) {
+    println("could not read file %s", filename);
+    return 1;
+  }
 
-void free_lexer_state(struct lexer_state *state);
+  struct lexer_state *state = new_lexer_state(filename, input);
+  struct token *token = NULL;
 
-#endif /* _lexer_h_ */
+  clock_t start = clock();
+
+  while (token == NULL || token->type != EOF_TOK) {
+    token = next_token(state);
+    println("%s", dump_token(token));
+  }
+
+  println("finished in %f s.", (double)(clock() - start) / CLOCKS_PER_SEC);
+
+  free_lexer_state(state);
+  free_token(token);
+}

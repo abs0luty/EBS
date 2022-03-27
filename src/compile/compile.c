@@ -114,21 +114,6 @@ static void compile_component(const struct component *component) {
   }
 }
 
-static void link_components(const struct component *main_component,
-                            const struct component **link_components,
-                            size_t link_components_count) {
-
-  char *link_command = format("ld -relocatable -o %s.o ", main_component->name);
-
-  for (register size_t i = 0; i < link_components_count; i++) {
-    link_command = format("%s %s.o ", link_command, link_components[i]->name);
-  }
-
-  system(link_command);
-  println("[INFO]: relinked \"%s\" (%s.o)", main_component->name,
-          main_component->name);
-}
-
 static void compile_components(const struct visitor_state *state) {
   for (size_t i = 0; i < state->components_count; ++i) {
     println("[INFO]: compiling component: %s", state->components[i]->name);

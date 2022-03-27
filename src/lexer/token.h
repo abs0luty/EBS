@@ -20,30 +20,49 @@
 /// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 /// DEALINGS IN THE SOFTWARE.
 
-#ifndef _code_location_h_
-#define _code_location_h_
+#ifndef _token_h_
+#define _token_h_
 
-#include "str.h"
-#include <stdlib.h>
+#include "../util/code_location.h"
+#include "../util/str.h"
 
-struct code_location {
-  size_t index;
-
-  size_t line, column;
+union token_value {
+  char *str;
+  char chr;
 };
 
-struct code_location *new_code_location(size_t index, size_t line,
-                                        size_t column);
+#define TVALUE(key, value)                                                     \
+  (union token_value) { .key = value }
 
-struct code_location *copy_code_location(const struct code_location *location);
+struct token {
+  enum {
+    STRING_TOK,
+    ID_TOK,
+    COMPONENT_TOK,
+    STATIC_TOK,
+    LINK_TOK,
+    EXECUTABLE_TOK,
+    TEST_TOK,
+    SEMICOLON_TOK,
+    COLON_TOK,
+    EOF_TOK,
+    ERROR_TOK,
+    STRING_NOT_CLOSED_TOK,
+  } type;
+  union token_value value;
+  const struct code_location *startl, *endl;
+};
 
-// can be used for tokenizing punctuators where we need to get
-// a location of the next character
-struct code_location *
-copy_advanced_code_location(const struct code_location *location);
+struct token *new_token(int type, union token_value value,
+                        const struct code_location *startl,
+                        const struct code_location *endl);
 
-char *dump_code_location(const struct code_location *location);
+char *dump_token(const struct token *token);
 
-void free_code_location(struct code_location *location);
+char *dump_token_type(int type);
 
-#endif /* _code_location_h_ */
+char *dump_token_value(union token_value value, int type);
+
+void free_token(struct token *token);
+
+#endif /* _token_h_ */

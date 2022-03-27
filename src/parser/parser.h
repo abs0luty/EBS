@@ -23,10 +23,10 @@
 #ifndef _parser_h_
 #define _parser_h_
 
-#include "AST.h"
-#include "lexer.h"
-#include "println.h"
-#include "token.h"
+#include "../AST/AST.h"
+#include "../lexer/lexer.h"
+#include "../lexer/token.h"
+#include "../util/println.h"
 
 struct parser_state {
   struct lexer_state *lexer_state;

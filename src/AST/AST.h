@@ -23,7 +23,7 @@
 #ifndef _AST_h_
 #define _AST_h_
 
-#include "code_location.h"
+#include "../util/code_location.h"
 #include <stdlib.h>
 
 struct build_file_AST {

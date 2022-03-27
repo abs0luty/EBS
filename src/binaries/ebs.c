@@ -20,39 +20,40 @@
 /// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 /// DEALINGS IN THE SOFTWARE.
 
-#include "file.h"
-#include "lexer.h"
-#include "println.h"
-#include "token.h"
+#include "../build_info/build_info.h"
+#include "../compile/compile.h"
+#include "../lexer/lexer.h"
+#include "../parser/parser.h"
+#include "../util/file.h"
+#include "../util/println.h"
+#include "../visitor/visitor.h"
+#include <stdio.h>
 #include <time.h>
 
-int main(size_t argc, const char **argv) {
-  const char *filename = argv[1];
+int main(void) {
+  char *build_script_content = read_file("EBSFile");
 
-  if (!filename) {
-    println("usage: %s <filename>", argv[0]);
-    return 1;
+  if (!build_script_content) {
+    println("unable to open EBSFile");
+    exit(1);
   }
-
-  char *input = read_file(filename);
-
-  if (!input) {
-    println("could not read file %s", filename);
-    return 1;
-  }
-
-  struct lexer_state *state = new_lexer_state(filename, input);
-  struct token *token = NULL;
 
   clock_t start = clock();
+  struct parser_state *parser_state =
+      new_parser_state(new_lexer_state("EBSFile", build_script_content));
+  struct build_file_AST *ast = parse_build_file(parser_state);
+  free_parser_state(parser_state);
 
-  while (token == NULL || token->type != EOF_TOK) {
-    token = next_token(state);
-    println("%s", dump_token(token));
-  }
+  println("[SUCESS]: parsed EBSFile in %f seconds",
+          (double)(clock() - start) / CLOCKS_PER_SEC);
 
-  println("finished in %f s.", (double)(clock() - start) / CLOCKS_PER_SEC);
+  struct visitor_state *visitor_state = new_visitor_state("EBSFile");
+  visit_build_file(ast, visitor_state);
 
-  free_lexer_state(state);
-  free_token(token);
+  println("[SUCESS]: visited EBSFile in %f seconds",
+          (double)(clock() - start) / CLOCKS_PER_SEC);
+
+  print_build_info();
+
+  compile(visitor_state);
 }

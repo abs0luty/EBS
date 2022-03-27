@@ -20,49 +20,18 @@
 /// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 /// DEALINGS IN THE SOFTWARE.
 
-#ifndef _visitor_h_
-#define _visitor_h_
+#include "../util/println.h"
+#include "../util/str.h"
 
-#include "AST.h"
-#include "println.h"
-#include "str.h"
-#include <stdlib.h>
+#define BUILD_AUTHOR "Salimgereyev Adi"
 
-#define LINK_COMPONENTS_BUFFER_SIZE 1024
+#if defined(__clang__)
+#define BUILD_INFO_COMPILER                                                    \
+  format("Clang %d.%d", __clang_major__, __clang_minor__)
+#elif defined(__GNUC__)
+#define BUILD_INFO_COMPILER format("GCC %d.%d", __GNUC__, __GNUC_MINOR__)
+#else
+#define BUILD_INFO_COMPILER "unknown"
+#endif
 
-struct component {
-  char *name;
-  int kind;
-
-  char **sources;
-  size_t sources_count;
-
-  struct component **link_components;
-  size_t link_components_count;
-};
-
-struct component *new_component(char *name, int kind, char **sources,
-                                size_t sources_count);
-
-void free_component(struct component *component);
-
-#define COMPONENTS_BUFFER_SIZE 10000
-#define TESTS_BUFFER_SIZE 100000
-
-struct visitor_state {
-  const char *filename;
-
-  struct component **components;
-  size_t components_count;
-
-  char **tests;
-  size_t tests_count;
-};
-
-struct visitor_state *new_visitor_state(const char *filename);
-
-void visit_build_file(struct build_file_AST *ast, struct visitor_state *state);
-
-void free_visitor_state(struct visitor_state *state);
-
-#endif /* _visitor_h_ */
+void print_build_info(void);

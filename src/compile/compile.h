@@ -20,41 +20,12 @@
 /// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 /// DEALINGS IN THE SOFTWARE.
 
-#include "build_info.h"
-#include "compile.h"
-#include "file.h"
-#include "find_compiler.h"
-#include "lexer.h"
-#include "parser.h"
-#include "println.h"
-#include "visitor.h"
-#include <stdio.h>
-#include <time.h>
+#ifndef _compile_h_
+#define _compile_h_
 
-int main(void) {
-  char *build_script_content = read_file("EBSFile");
+#include "../visitor/visitor.h"
+#include <string.h>
 
-  if (!build_script_content) {
-    println("unable to open EBSFile");
-    exit(1);
-  }
+void compile(const struct visitor_state *state);
 
-  clock_t start = clock();
-  struct parser_state *parser_state =
-      new_parser_state(new_lexer_state("EBSFile", build_script_content));
-  struct build_file_AST *ast = parse_build_file(parser_state);
-  free_parser_state(parser_state);
-
-  println("[SUCESS]: parsed EBSFile in %f seconds",
-          (double)(clock() - start) / CLOCKS_PER_SEC);
-
-  struct visitor_state *visitor_state = new_visitor_state("EBSFile");
-  visit_build_file(ast, visitor_state);
-
-  println("[SUCESS]: visited EBSFile in %f seconds",
-          (double)(clock() - start) / CLOCKS_PER_SEC);
-
-  print_build_info();
-
-  compile(visitor_state);
-}
+#endif /* _compile_h_ */

@@ -20,59 +20,49 @@
 /// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 /// DEALINGS IN THE SOFTWARE.
 
-#include "find_compiler.h"
+#ifndef _visitor_h_
+#define _visitor_h_
 
-static const char *compiler_names[] = {"cc",  "gcc", "cl",
-                                       "bcc", "xlc", "clang"};
+#include "../AST/AST.h"
+#include "../util/println.h"
+#include "../util/str.h"
+#include <stdlib.h>
 
-static int program_exists(const char *name);
+#define LINK_COMPONENTS_BUFFER_SIZE 1024
 
-char *find_compiler(void) {
-  register int i;
-  for (i = 0; i < sizeof(compiler_names) / sizeof(const char *); i++) {
-    if (program_exists(compiler_names[i]))
-      return (char *)compiler_names[i];
-  }
-  return NULL;
-}
+struct component {
+  char *name;
+  int kind;
 
-static int program_exists(const char *name) {
-  if (strchr(name, '/')) {
-    return access(name, X_OK) == 0;
-  }
+  char **sources;
+  size_t sources_count;
 
-  const char *path = getenv("PATH");
+  struct component **link_components;
+  size_t link_components_count;
+};
 
-  if (!path)
-    return 0;
+struct component *new_component(char *name, int kind, char **sources,
+                                size_t sources_count);
 
-  char *buf = malloc(strlen(path) + strlen(name) + 3);
+void free_component(struct component *component);
 
-  if (!buf)
-    return 0;
+#define COMPONENTS_BUFFER_SIZE 10000
+#define TESTS_BUFFER_SIZE 100000
 
-  for (; *path; ++path) {
-    char *p = buf;
-    for (; *path && *path != ':'; ++path, ++p) {
-      *p = *path;
-    }
+struct visitor_state {
+  const char *filename;
 
-    if (p == buf)
-      *p++ = '.';
-    if (p[-1] != '/')
-      *p++ = '/';
+  struct component **components;
+  size_t components_count;
 
-    strcpy(p, name);
+  char **tests;
+  size_t tests_count;
+};
 
-    if (access(buf, X_OK) == 0) {
-      free(buf);
-      return 1;
-    }
+struct visitor_state *new_visitor_state(const char *filename);
 
-    if (!*path)
-      break;
-  }
+void visit_build_file(struct build_file_AST *ast, struct visitor_state *state);
 
-  free(buf);
-  return 0;
-}
+void free_visitor_state(struct visitor_state *state);
+
+#endif /* _visitor_h_ */
