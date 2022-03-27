@@ -59,10 +59,10 @@ static void advance(struct parser_state *state) {
     print_error(state, format("unexcepted character: '%c' (+%d)",
                               state->current_token->value.chr,
                               (int)state->current_token->value.chr));
-    advance(state);
+    exit(1);
   } else if (state->current_token->type == STRING_NOT_CLOSED_TOK) {
     print_error(state, "not closed string");
-    advance(state);
+    exit(1);
   }
 }
 

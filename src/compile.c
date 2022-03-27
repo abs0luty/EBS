@@ -107,6 +107,10 @@ static void compile_component(const struct component *component) {
               component->name);
       exit(1);
     }
+
+    remove(format("%s.o", component->name));
+    println("[INFO]: removed executable object for \"%s\" (%s.o)",
+            component->name, component->name);
   }
 }
 
