@@ -55,9 +55,6 @@ struct lexer_state *new_lexer_state(const char *filename, const char *input) {
 }
 
 struct token *next_token(struct lexer_state *state) {
-  if (isspace(current_char(state)))
-    skip_whitespace(state);
-
   // skip comment
   if (current_char(state) == '/' && lookahead(state) == '/') {
     advance(state);
@@ -65,6 +62,9 @@ struct token *next_token(struct lexer_state *state) {
     while (current_char(state) != '\n' && !lexing_finished(state))
       advance(state);
   }
+
+  if (isspace(current_char(state)))
+    skip_whitespace(state);
 
   if (current_char(state) == '"')
     return next_string_token(state);
@@ -88,11 +88,13 @@ struct token *next_token(struct lexer_state *state) {
     return next_name_token(state);
 
   if (lexing_finished(state))
-    return new_token(EOF_TOK, TVALUE(chr, (char)0), state->location,
+    return new_token(EOF_TOK, TVALUE(chr, (char)0),
+                     copy_code_location(state->location),
                      copy_advanced_code_location(state->location));
 
   struct token *error_token =
-      new_token(ERROR_TOK, TVALUE(chr, current_char(state)), state->location,
+      new_token(ERROR_TOK, TVALUE(chr, current_char(state)),
+                copy_code_location(state->location),
                 copy_advanced_code_location(state->location));
   advance(state);
   return error_token;
